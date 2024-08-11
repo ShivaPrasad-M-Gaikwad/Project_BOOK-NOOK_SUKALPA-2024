@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Admin Page</title>
+    <style>
+        body {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            font-family: Arial, sans-serif;
+        }
+
+        .form-container {
+            margin: 20px;
+        }
+
+        .form-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .form-input {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f1c40f;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .form-button {
+            background-color: #34495e;
+            color: #ecf0f1;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-container">
+        <div class="form-title">Add Book</div>
+        <input type="text" id="addTitle" class="form-input" placeholder="Enter Title">
+        <input type="text" id="addAuthor" class="form-input" placeholder="Enter Author">
+        <input type="text" id="addPublisher" class="form-input" placeholder="Enter Publisher">
+        <input type="text" id="addGenres" class="form-input" placeholder="Enter Genres">
+        <input type="number" id="addReviews" class="form-input" placeholder="Enter Reviews" step="0.1">
+        <input type="text" id="addUserReview" class="form-input" placeholder="Enter User Review">
+        <input type="text" id="addImageUrl" class="form-input" placeholder="Enter Image URL">
+        <button class="form-button" onclick="addBook()">ADD</button>
+    </div>
+
+    <div class="form-container">
+        <div class="form-title">Update Book</div>
+        <input type="text" id="updateTitle" class="form-input" placeholder="Update Title">
+        <input type="text" id="updateAuthor" class="form-input" placeholder="Update Author">
+        <input type="text" id="updatePublisher" class="form-input" placeholder="Update Publisher">
+        <input type="text" id="updateGenres" class="form-input" placeholder="Update Genres">
+        <input type="number" id="updateReviews" class="form-input" placeholder="Update Reviews" step="0.1">
+        <input type="text" id="updateUserReview" class="form-input" placeholder="Update User Review">
+        <input type="text" id="updateImageUrl" class="form-input" placeholder="Update Image URL">
+        <input type="number" id="updateIid" class="form-input" placeholder="Update Book ID">
+        <button class="form-button" onclick="updateBook()">Update</button>
+    </div>
+
+    <script>
+
+        let baseapi = "http://localhost:8000/api/"
+        async function addBook() {
+            const book = {
+                Title: document.getElementById('addTitle').value,
+                Author: document.getElementById('addAuthor').value,
+                Publisher: document.getElementById('addPublisher').value,
+                Genres: document.getElementById('addGenres').value,
+                Reviews: parseFloat(document.getElementById('addReviews').value),
+                UserReview: document.getElementById('addUserReview').value,
+                ImageUrl: document.getElementById('addImageUrl').value
+            };
+
+            try {
+                let finalurll = baseapi + `addbook/?title=${book.Title}&author=${book.Author}&publisher=${book.Publisher}&geners=${book.Genres}reviews=${book.Reviews}&userreview=${book.UserReview}&imageurl=${book.ImageUrl}`
+
+                const response = await fetch(finalurll, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    // body: JSON.stringify(book)
+                });
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log("Book added:", result);
+                    alert("Book added successfully!");
+                } else {
+                    console.error("Failed to add book");
+                    alert("Failed to add book");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred while adding the book");
+            }
+        }
+
+        async function updateBook() {
+
+            const book = {
+                title: document.getElementById('updateTitle').value,
+                author: document.getElementById('updateAuthor').value,
+                publisher: document.getElementById('updatePublisher').value,
+                genres: document.getElementById('updateGenres').value,
+                reviews: parseFloat(document.getElementById('updateReviews').value),
+                userReview: document.getElementById('updateUserReview').value,
+                imageUrl: document.getElementById('updateImageUrl').value,
+                iid: parseInt(document.getElementById('updateIid').value)
+            };
+            let uplink = `updatedata/${book.iid}?Title=${book.title}&author=${book.author}&publisher=${book.publisher}&geners=${book.genres}&reviews=${book.reviews}&userreview=${book.userReview}&imageurl=${book.imageUrl}`
+
+            try {
+                const response = await fetch(uplink, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    // body: JSON.stringify(book)
+                });
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log("Book updated:", result);
+                    alert("Book updated successfully!");
+                } else {
+                    console.error("Failed to update book");
+                    alert("Failed to update book");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred while updating the book");
+            }
+        }
+    </script>
+</body>
+
+</html>
